@@ -7,3 +7,9 @@ really fun learning experience, I hope you can find some value in it.
 
 You can follow my tutorials about this implementation at my blog http://markomihajlovic.blogspot.rs/ if you are interested,
 and if you want to contribute you are welcome to do so.  
+
+In order for routing to work you need to change the rewrite base in your .htaccess file to the root directory where you cloned
+the repo. 
+
+For example 
+RewriteBase /yourdirectory/public/
