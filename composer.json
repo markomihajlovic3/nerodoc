@@ -1,0 +1,14 @@
+{
+    "autoload" : {
+        "psr-4" : {
+            "Nero\\" : "src/"
+        }
+    },
+
+    "require" : {
+        "pimple/pimple" : "3.*",
+        "symfony/http-foundation": "3.*",
+        "respect/validation": "^1.0"
+    }
+
+}
