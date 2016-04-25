@@ -9,8 +9,16 @@ namespace Nero\Core\Http;
  * You can add a view to be rendered with data,
  * redirect the user or send a json response for APIs.
  *******************************************************/
-abstract class Response
+class Response
 {
+    private $message;
+    
+    public function __construct($message = "")
+    {
+        $this->message = $message;
+    }
+
+
     /**
      * Set a response header
      *
@@ -26,9 +34,12 @@ abstract class Response
 
 
     /**
-     * Will be implemented by subclasses
+     * Just return the message to the user, subclasses will implement this method
      *
      * @return mixed
      */
-    abstract public function send();
+    public function send()
+    {
+        echo $this->message;
+    }
 }

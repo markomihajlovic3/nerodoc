@@ -88,8 +88,14 @@ class Dispatcher
             }
         }
 
-        //finaly lets invoke the method with the all the parameters
-        return $reflectionMethod->invokeArgs($this->controller, $this->params);
+        //finaly lets invoke the method with the all the parameters and get the response
+        $response = $reflectionMethod->invokeArgs($this->controller, $this->params);
+
+        //if its a simple string, wrap it into the response class
+        if(is_string($response))
+            return new \Nero\Core\Http\Response($response);
+
+        return $response;
     }
 
 

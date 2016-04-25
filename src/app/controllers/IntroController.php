@@ -28,4 +28,11 @@ class IntroController extends BaseController
         //lets redirect the user to the welcome page
         return redirect('welcome');
     }
+
+
+    public function text()
+    {
+        //lets just return string, which will be converted to response behind the scenes
+        return "Welcome to Nero!";
+    }
 }

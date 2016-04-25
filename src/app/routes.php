@@ -12,4 +12,5 @@ use Nero\Core\Routing\Router;
 Router::registerRoute('get', '/welcome', 'IntroController@welcome');
 Router::registerRoute('get', '/json', 'IntroController@json');
 Router::registerRoute('get', '/redirect', 'IntroController@redirect');
+Router::registerRoute('get', '/text', 'IntroController@text');
 
