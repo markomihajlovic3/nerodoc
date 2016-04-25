@@ -8,8 +8,14 @@ really fun learning experience, I hope you can find some value in it.
 You can follow my tutorials about this implementation at my blog http://markomihajlovic.blogspot.rs/ if you are interested,
 and if you want to contribute you are welcome to do so.  
 
-In order for routing to work you need to change the rewrite base in your .htaccess file to the root directory where you cloned
-the repo. 
 
-For example 
+Install instructions: 
+
+If you clone the repo under some other name (not nero), in order for routing to work you need to change the rewrite base
+in your .htaccess file to the root directory where you cloned the repo. 
+
+For example, the RewriteBase line should read like this :
 RewriteBase /yourdirectory/public/
+
+Next just run "composer install" to install all the dependencies, and finish it off with "composer dump-autoload -o" to 
+generate the autoload files. You should be all set to go, hit the localhost/nero/public/welcome route for splash screen.
