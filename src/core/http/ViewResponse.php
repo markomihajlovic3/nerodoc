@@ -2,7 +2,11 @@
 
 namespace Nero\Core\Http;
 
-
+/********************************************************************
+ * ViewResponse implements the needed functionality for displaying
+ * views to the users. It implements the abstract send method for
+ * rendering views to the browser.
+ ********************************************************************/
 class ViewResponse extends Response
 {
     private $views = [];

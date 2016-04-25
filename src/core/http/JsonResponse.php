@@ -2,7 +2,10 @@
 
 namespace Nero\Core\Http;
 
-
+/**************************************************************************
+ * JsonResponse implements the functionality needed to send back JSON data
+ * to the user. It imeplements the send abstract method.
+ ***************************************************************************/
 class JsonResponse extends Response
 {
     private $jsonData;

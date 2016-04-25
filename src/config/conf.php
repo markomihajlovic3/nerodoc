@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Return the array containing all the config info
+ * Return the array containing all the config information
  *
  * @return assoc array
  */

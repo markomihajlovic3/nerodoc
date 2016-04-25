@@ -2,7 +2,10 @@
 
 namespace Nero\Core\Http;
 
-
+/*******************************************************************************
+ * RedirectResponse implements the needed funcionality for redirecting the users
+ * to different urls. It implements the send abstract method.
+ *******************************************************************************/
 class RedirectResponse extends Response
 {
     private $redirectPath;
