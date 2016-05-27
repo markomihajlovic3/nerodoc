@@ -27,7 +27,7 @@
     <body>
         <div id="welcome">
             <h1>Nero</h1>
-            <p>"It's easy enough to stand still. The difficulty is to walk without touching the ground."</p>
+            <p>It's easy enough to stand still. The difficulty is to walk without touching the ground.</p>
         </div>
     </body>
 </html>

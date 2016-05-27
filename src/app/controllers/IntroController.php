@@ -2,6 +2,9 @@
 
 namespace Nero\App\Controllers;
 
+use \Nero\App\Models\User;
+use \Nero\App\Models\Post;
+
 
 //simple controller that demonstrates different responses 
 class IntroController extends BaseController
@@ -26,7 +29,7 @@ class IntroController extends BaseController
     public function redirect()
     {
         //lets redirect the user to the welcome page
-        return redirect('welcome');
+        return redirect();
     }
 
 
@@ -35,4 +38,33 @@ class IntroController extends BaseController
         //lets just return string, which will be converted to response behind the scenes
         return "Welcome to Nero!";
     }
+
+
+    public function user($id)
+    {
+        //$user = User::find(1);
+
+        $posts = User::find(1)->posts();
+
+        print_r($posts);
+        
+        /*
+        foreach($posts as $post){
+            echo "Title : {$post->title}<br/>";
+        }
+
+        */
+        return "Hey, you made it this far, the result set is " . count($posts);
+    }
+
+
+    public function post()
+    {
+        $user = Post::find(3)->user();
+
+        return "Hey {$user->name}, you created some posts on our site!";
+    }
+
+    
+
 }

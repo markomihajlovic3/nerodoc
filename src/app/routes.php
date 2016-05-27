@@ -8,9 +8,11 @@ use Nero\Core\Routing\Router;
  ****************************************************************************/
 
 
-//simple routes demonstrate different possible responses(views, json, redirects)
-Router::registerRoute('get', '/welcome', 'IntroController@welcome');
+//simple routes demonstrate different possible responses(views, json, redirects and simple text)
+Router::registerRoute('get', '/', 'IntroController@welcome');
 Router::registerRoute('get', '/json', 'IntroController@json');
 Router::registerRoute('get', '/redirect', 'IntroController@redirect');
 Router::registerRoute('get', '/text', 'IntroController@text');
+Router::registerRoute('get', '/user/{id}', 'IntroController@user');
+Router::registerRoute('get', '/post', 'IntroController@post');
 

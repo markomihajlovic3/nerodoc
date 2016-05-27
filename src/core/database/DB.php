@@ -36,17 +36,16 @@ class DB
     public function query($sql, array $arguments = [])
     {
         try{
-            if(empty($arguments)){
-                //simple query
-                $stmt = $this->pdo->query($sql);
-                $this->result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            $stmt = $this->pdo->prepare($sql);
+            if($stmt->execute($arguments)){
+                if($this->startsWith('INSERT', $sql) || $this->startsWith('UPDATE', $sql) || $this->startsWith('DELETE', $sql))
+                    $this->result = true;
+                else
+                    $this->result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
             }
-            else{
-                //prepared query
-                $stmt = $this->pdo->prepare($sql);
-                $stmt->execute($arguments);
-                $this->result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-            }
+            else
+                $this->result = false;
+
 
             //lets return our results
             return $this->getResults();
@@ -103,6 +102,15 @@ class DB
     }
 
     
+    private function startsWith($pattern, $string)
+    {
+        if(strpos($string, $pattern) === 0)
+            return true;
+
+        return false;
+    }
+
+
     /**
      * Disable cloning of the singleton
      *

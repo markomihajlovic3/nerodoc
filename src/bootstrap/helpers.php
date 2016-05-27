@@ -42,19 +42,23 @@ function method($value)
 
 
 /**
- * Easy access to container,bad practice, oh well...
+ * Easy access to IoC container,bad practice, oh well...
  *
- * @return Pimple\Container
+ * @return Pimple\Container or instance of requested service
  */
-function container()
+function container($service = "")
 {
     global $container;
-    return $container;
+
+    if($service == "")
+        return $container;
+
+    return $container[$service];
 }
 
 
 /**
- * Css helper, generates link element for linking css files
+ * CSS helper, generates link element for linking css files
  *
  * @param string $path
  * @return string 
