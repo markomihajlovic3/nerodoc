@@ -4,6 +4,7 @@ namespace Nero\App\Controllers;
 
 use \Nero\App\Models\User;
 use \Nero\App\Models\Post;
+use \Nero\Core\Database\DB;
 
 
 //simple controller that demonstrates different responses 
@@ -42,25 +43,17 @@ class IntroController extends BaseController
 
     public function user($id)
     {
-        //$user = User::find(1);
+        $users = User::find(1);
 
-        $posts = User::find(1)->posts();
-
-        print_r($posts);
-        
-        /*
-        foreach($posts as $post){
-            echo "Title : {$post->title}<br/>";
-        }
-
-        */
-        return "Hey, you made it this far, the result set is " . count($posts);
+        return json($users);
     }
 
 
     public function post()
     {
-        $user = Post::find(3)->user();
+        $user = Post::find(1)->user();
+
+        var_dump($user);
 
         return "Hey {$user->name}, you created some posts on our site!";
     }

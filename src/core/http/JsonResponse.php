@@ -2,13 +2,15 @@
 
 namespace Nero\Core\Http;
 
+use Nero\Core\Database\Model;
+
 /**************************************************************************
  * JsonResponse implements the functionality needed to send back JSON data
  * to the user. It imeplements the send abstract method.
  ***************************************************************************/
 class JsonResponse extends Response
 {
-    private $jsonData;
+    private $jsonData = [];
 
     /**
      * Constructor, data can be passed in directly
@@ -16,9 +18,21 @@ class JsonResponse extends Response
      * @param array $data 
      * @return void
      */
-    public function __construct(array $data)
+    public function __construct($data)
     {
-        $this->jsonData = $data;
+        //lets parse the data
+        if(is_subclass_of($data, 'Nero\App\Models\Model')){
+            //we have single instance of a model
+            $this->jsonData = $data->toArray();
+        }
+        else if($this->isArrayOfModels($data)){
+            //we have an array of models
+            foreach($data as $model)
+                $this->jsonData[] = $model->toArray();
+        }
+        else
+            //we have a simple array
+            $this->jsonData = $data;
     }
 
 
@@ -44,6 +58,25 @@ class JsonResponse extends Response
     public function send()
     {
         echo json_encode($this->jsonData);
+    }
+
+
+    /**
+     * Utility method to check for array of models
+     *
+     * @param array $array 
+     * @return bool
+     */
+    private function isArrayOfModels($array)
+    {
+        $result = true;
+
+        foreach($array as $subarray){
+            if(!is_subclass_of($subarray, 'Nero\App\Models\Model'))
+                $result = false;
+        }
+
+        return $result;
     }
 
 

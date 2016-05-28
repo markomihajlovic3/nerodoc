@@ -18,6 +18,7 @@ class QB
     private $db;
     private $tables;
     private $select;
+    private $set;
     private $whereClauses;
     private $orderBy;
     private $groupBy;
@@ -32,7 +33,7 @@ class QB
      * @param string $tables 
      * @return QB instance
      */
-    public static function table($tables)
+    public static function table($tables = "")
     {
         //lets create the instance of the builder and hook up the db connection
         $instance = new static;
@@ -49,6 +50,12 @@ class QB
     }
 
 
+    /**
+     * Used for inserting data into database
+     *
+     * @param array $data 
+     * @return array
+     */
     public function insert(array $data)
     {
         // ['?', '?' ...] 
@@ -71,6 +78,58 @@ class QB
 
         echo "SQL = " . $this->sql . "<br/>"; 
         return  $this->db->query($this->sql, $this->bindings);
+    }
+
+
+    /**
+     * Used for setting the columns for update 
+     *
+     * @param array $data 
+     * @return QB instance
+     */
+    public function set(array $data)
+    {
+        $columns = [];
+        foreach($data as $key => $value){
+            $this->addBinding($value);
+            $columns[] = "{$key}=?";
+        }
+
+        $formatedColumns = implode(',', $columns);
+
+        $this->set = "SET {$formatedColumns}";
+
+        return $this;
+    }
+
+
+    /**
+     * Execute the update command
+     *
+     * @return bool
+     */
+    public function update()
+    {
+        $this->sql = "UPDATE {$this->tables} {$this->set} {$this->whereClauses};";
+
+        echo "SQL = " . $this->sql;
+
+        return $this->db->query($this->sql, $this->bindings);
+    }
+
+
+    /**
+     * Execute the delete command
+     *
+     * @return bool
+     */
+    public function delete()
+    {
+        $this->sql = "DELETE FROM {$this->tables} {$this->whereClauses};";
+
+        echo "SQL = " . $this->sql;
+
+        return $this->db->query($this->sql, $this->bindings);
     }
 
 

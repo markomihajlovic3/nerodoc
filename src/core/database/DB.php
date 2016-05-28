@@ -63,17 +63,14 @@ class DB
      */
     private function getResults()
     {
-        if(!empty($this->result)){
-            //if there are multiple results return an indexed array
-            if(count($this->result) > 1)
-                return $this->result;
-            else
-                //else return just single result
-                return $this->result[0];
-        }
-        else
-            //we dont have any results
-            return false;
+        //lets check if we should return an array or just single result
+        if(count($this->result) > 1)
+            return $this->result;
+        else if(count($this->result) == 1)
+            return $this->result[0];
+
+        //just return what we got from the query
+        return $this->result;
     }
 
 

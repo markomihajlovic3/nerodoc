@@ -117,6 +117,21 @@ function redirect($to = "")
 
 
 /**
+ * Utility for checking if the array is multidimensional
+ *
+ * @param array $array 
+ * @return bool
+ */
+function isMultidimensional(array $array)
+{
+    if (count($array) == count($array, COUNT_RECURSIVE))
+        return false;
+    else
+        return true;
+}
+
+
+/**
  * Check if the app is in development mode,used for error feedback
  *
  * @return string

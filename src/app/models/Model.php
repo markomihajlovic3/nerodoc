@@ -41,7 +41,7 @@ class Model
     public function __get($name)
     {
         if(!in_array($name, array_keys($this->attributes)))
-            throw new \Exception('Trying to get non existant property.');
+            return false;
 
         return $this->attributes[$name];
     }
@@ -63,10 +63,10 @@ class Model
     //test method
     public function getAll()
     {
-        //return QB::table($this->table)->insert(['name' => 'Jana', 'username' => 'jani', 'email' => 'jani@yahoo.com']);
+        return QB::table($this->table)->insert(['name' => 'Fixor', 'username' => 'fix', 'email' => 'fix@yahoo.com']);
         return QB::table($this->table)
-                 ->whereIn('id', 4,5,6)
-                 ->get();
+                 ->where('id', '=', '10')
+                 ->delete();
     }
 
 
@@ -132,7 +132,7 @@ class Model
 
 
     /**
-     * Implement retrival of rows based on column 
+     * Implement retrival of models based on column 
      *
      * @param string $column 
      * @param string $operator 
@@ -202,6 +202,47 @@ class Model
 
 
     /**
+     * Implement saving of a model to a db row
+     *
+     * @return bool
+     */
+    public function save()
+    {
+        if($this->id)
+            //lets updated the row in the db
+            return QB::table($this->table)
+                     ->set($this->attributes)
+                     ->where('id', '=', $this->id)
+                     ->update();
+        else
+            //lets insert a new model into db
+            return QB::table($this->table)
+                     ->insert($this->attributes);
+    }
+
+
+    /**
+     * Implement deleting a row from the db
+     *
+     * @return bool
+     */
+    public function delete()
+    {
+        if($this->id){
+            //lets just delete the row from the db and delete the attributes on the model
+            $result = QB::table($this->table)
+                     ->where('id', '=', $this->id)
+                     ->delete();
+
+            //lets clear out the attributes
+            $this->attributes = [];
+
+            return $result;
+        } 
+    }
+
+
+    /**
      * Used for setting custom table names
      *
      * @param string $table 
@@ -239,21 +280,6 @@ class Model
 
 
     /**
-     * Utility for checking if the array is multidimensional
-     *
-     * @param array $array 
-     * @return bool
-     */
-    private function isMultidimensional(array $array)
-    {
-        if (count($array) == count($array, COUNT_RECURSIVE))
-            return false;
-        else
-            return true;
-    }
-
-
-    /**
      * Utility for parsing the query results into model response
      *
      * @param Model $modelInstance
@@ -263,7 +289,7 @@ class Model
     private function packResults($queryResult)
     {
         //lets check for multidimensional array 
-        if($this->isMultidimensional($queryResult)){
+        if(isMultidimensional($queryResult)){
             //we need to return array of models
             $packedResult = [];
 
