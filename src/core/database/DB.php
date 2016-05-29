@@ -38,9 +38,10 @@ class DB
         try{
             $stmt = $this->pdo->prepare($sql);
             if($stmt->execute($arguments)){
-                if($this->startsWith('INSERT', $sql) || $this->startsWith('UPDATE', $sql) || $this->startsWith('DELETE', $sql))
+                if(stringStartsWith('INSERT', $sql) || stringStartsWith('UPDATE', $sql) || stringStartsWith('DELETE', $sql))
                     $this->result = true;
                 else
+                    //we have results to fetch
                     $this->result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
             }
             else
@@ -63,13 +64,14 @@ class DB
      */
     private function getResults()
     {
-        //lets check if we should return an array or just single result
         if(count($this->result) > 1)
+            //return an array 
             return $this->result;
         else if(count($this->result) == 1)
+            //return single result
             return $this->result[0];
 
-        //just return what we got from the query
+        //else just return what we got from the query
         return $this->result;
     }
 
@@ -99,15 +101,6 @@ class DB
     }
 
     
-    private function startsWith($pattern, $string)
-    {
-        if(strpos($string, $pattern) === 0)
-            return true;
-
-        return false;
-    }
-
-
     /**
      * Disable cloning of the singleton
      *

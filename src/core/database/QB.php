@@ -42,8 +42,6 @@ class QB
         if($tables == "")
             throw new \Exception('Table name empty.');
 
-
-        //hook up the tables
         $instance->tables = $tables;
 
         return $instance;
@@ -76,7 +74,8 @@ class QB
         //generate sql
         $this->sql = "INSERT INTO {$this->tables} {$formatedColumnNames} VALUES {$formatedQuestionsMarks} ;";
 
-        echo "SQL = " . $this->sql . "<br/>"; 
+        $this->echoSQL();
+
         return  $this->db->query($this->sql, $this->bindings);
     }
 
@@ -104,7 +103,7 @@ class QB
 
 
     /**
-     * Execute the update command
+     * Execute the update query
      *
      * @return bool
      */
@@ -112,14 +111,14 @@ class QB
     {
         $this->sql = "UPDATE {$this->tables} {$this->set} {$this->whereClauses};";
 
-        echo "SQL = " . $this->sql;
+        $this->echoSQL();
 
         return $this->db->query($this->sql, $this->bindings);
     }
 
 
     /**
-     * Execute the delete command
+     * Execute the delete query
      *
      * @return bool
      */
@@ -127,7 +126,7 @@ class QB
     {
         $this->sql = "DELETE FROM {$this->tables} {$this->whereClauses};";
 
-        echo "SQL = " . $this->sql;
+        $this->echoSQL();
 
         return $this->db->query($this->sql, $this->bindings);
     }
@@ -141,18 +140,11 @@ class QB
      */
     public function select()
     {
-        //get the supplied arguments
-        $arguments = func_get_args();
+        //lets format the columns that we are interested in
+        $formatedColumns = implode(',', func_get_args());
 
-        //lets start the select statement
-        $this->select = "SELECT ";
-
-        //lets add the columns that we are interested in
-        for($i = 0; $i < count($arguments); $i++){
-            $this->select .= $arguments[$i];
-            if($i < (count($arguments) - 1))
-                $this->select .= ",";
-        }
+        //generate the SELECT portion of the query
+        $this->select =  "SELECT {$formatedColumns}";
 
         return $this;
     }
@@ -165,7 +157,7 @@ class QB
      */
     public function distinct()
     {
-        //just insert DISTINCT substring into select statement
+        //just insert "DISTINCT" substring into select statement
         $this->select = substr_replace($this->select, "DISTINCT ", 7, 0);
 
         return $this;
@@ -186,7 +178,7 @@ class QB
         if(!in_array($operator, $this->operators))
             throw new \Exception("Operator {$operator} not supported.");
 
-        $this->whereClauses .= "WHERE {$column} {$operator} ?";
+        $this->whereClauses = "WHERE {$column} {$operator} ?";
 
         //finaly lets bind the value
         $this->addBinding($value);
@@ -251,7 +243,7 @@ class QB
      */
     public function whereBetween($column, $start, $end)
     {
-        $this->whereClauses .= "WHERE {$column} BETWEEN ? AND ?";
+        $this->whereClauses = "WHERE {$column} BETWEEN ? AND ?";
 
         //finaly lets bind the values
         $this->addBinding($start);
@@ -271,7 +263,7 @@ class QB
      */
     public function whereNotBetween($column, $start, $end)
     {
-        $this->whereClauses .= "WHERE {$column} NOT BETWEEN ? AND ?";
+        $this->whereClauses = "WHERE {$column} NOT BETWEEN ? AND ?";
 
         //finaly lets bind the values
         $this->addBinding($start);
@@ -287,22 +279,19 @@ class QB
      * @param string $column 
      * @return QB instance
      */
-    public function whereIn($column)
+    public function whereIn($column, array $values)
     {
-        //lets get all the arguments passed into the method
-        $args = func_get_args();
+        //lets bind the values and populate coresponding question marks
+        $questionMarks= [];
+        foreach($values as $value){
+            $questionMarks[] = "?";
+            $this->addBinding($value);
+        }
 
-        //get the column name from the arguments
-        $column = $args[0];
-        unset($args[0]);
-
-        //lets format the remaining values into the correct form
-        $values = array_values($args);
-        $implodedValues = implode(',', $values);
-        $formatedValues = "(" . $implodedValues . ")";
+        $formatedQuestionMarks = "(" . implode(',', $questionMarks) . ")";
         
         //lets create the where clause
-        $this->whereClauses .= "WHERE {$column} IN $formatedValues";
+        $this->whereClauses = "WHERE {$column} IN {$formatedQuestionMarks}";
 
         return $this;
     }
@@ -314,20 +303,19 @@ class QB
      * @param string $column 
      * @return QB instance
      */
-    public function whereNotIn($column)
+    public function whereNotIn($column, array $values)
     {
-        $args = func_get_args();
+        //lets bind the values and populate coresponding question marks
+        $questionMarks= [];
+        foreach($values as $value){
+            $questionMarks[] = "?";
+            $this->addBinding($value);
+        }
 
-        $column = $args[0];
-        unset($args[0]);
-
-        //lets format the values into the correct form
-        $values = array_values($args);
-        $implodedValues = implode(',', $values);
-        $formatedValues = "(" . $implodedValues . ")";
+        $formatedQuestionMarks = "(" . implode(',', $questionMarks) . ")";
         
         //lets create the where clause
-        $this->whereClauses .= "WHERE {$column} NOT IN $formatedValues";
+        $this->whereClauses = "WHERE {$column} NOT IN {$formatedQuestionMarks}";
 
         return $this;
     }
@@ -354,7 +342,7 @@ class QB
         }
 
         //create the full order by clause
-        $this->orderBy = "ORDER BY " . $formatedColumns; 
+        $this->orderBy = "ORDER BY {$formatedColumns}";
 
         return $this;
     }
@@ -365,13 +353,15 @@ class QB
      *
      * @return QB instance
      */
-    public function groupBy()
+    public function groupBy($columns)
     {
-        //lets concatanate columns with a , 
-        $formatedColumns = implode(',', func_get_args());
+        $formatedColumns = "";
+        if(is_array($columns))
+            $formatedColumns = implode(',', $columns);
+        else
+            $formatedColumns = implode(',', func_get_args());
 
-        //create the group by clause
-        $this->groupBy = "GROUP BY " . $formatedColumns;
+        $this->groupBy = "GROUP BY {$formatedColumns}";
 
         return $this;
     }
@@ -393,7 +383,7 @@ class QB
         $this->sql = "{$this->select} FROM {$this->tables} {$this->whereClauses} {$this->orderBy} {$this->groupBy};";
 
         //for testing
-        echo "SQL = "  . $this->sql . "<br/>";
+        $this->echoSQL();
 
         //lets execute the query
         $result = $this->db->query($this->sql, $this->bindings);
@@ -415,6 +405,23 @@ class QB
     private function addBinding($value)
     {
         $this->bindings[] = $value;
+    }
+
+
+    /**
+     * For testing
+     *
+     */
+    private function echoSQL()
+    {
+        echo "SQL = " . $this->sql . "<br/>";
+        echo "Bindings = ";
+
+        foreach($this->bindings as $binding){
+            echo $binding . " | ";
+        }
+
+        echo "<br/>";
     }
     
 }

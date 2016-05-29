@@ -131,6 +131,15 @@ function isMultidimensional(array $array)
 }
 
 
+function stringStartsWith($pattern, $string)
+{
+    if(strpos($string, $pattern) === 0)
+        return true;
+
+    return false;
+}
+
+
 /**
  * Check if the app is in development mode,used for error feedback
  *

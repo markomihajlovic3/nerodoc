@@ -40,7 +40,7 @@ class Model
      */
     public function __get($name)
     {
-        if(!in_array($name, array_keys($this->attributes)))
+        if(! in_array($name, array_keys($this->attributes)))
             return false;
 
         return $this->attributes[$name];
@@ -60,13 +60,34 @@ class Model
     }
 
 
-    //test method
-    public function getAll()
+    /**
+     * Implement dynamic methods for querying the db
+     *
+     * @param string $name
+     * @param array $arguments        
+     * @return Model instance
+     */
+    public static function __callStatic($name, $arguments)
     {
-        return QB::table($this->table)->insert(['name' => 'Fixor', 'username' => 'fix', 'email' => 'fix@yahoo.com']);
-        return QB::table($this->table)
-                 ->where('id', '=', '10')
-                 ->delete();
+        if(stringStartsWith("where", $name)){
+            $propertyName = strtolower(substr($name, 5));
+
+            $instance = new static;
+
+            $result = QB::table($instance->table)->where($propertyName, '=', $arguments[0])->get();
+
+            return $instance->packResults($result);
+        }
+
+
+        throw new \Exception("Calling nonexistant method {$name}.");
+    }
+
+
+    //test method
+    public function testQB()
+    {
+        return QB::table($this->table)->select('username','bio')->where('id', '=', 1)->get();
     }
 
 
@@ -176,7 +197,7 @@ class Model
      */
     public function hasMany($tableName, $foreignKey = "")
     {
-        $foreignKey = $this->createForeignKey($foreignKey);
+        $foreignKey = $this->createHasManyForeignKey($foreignKey);
         
         $queryResult = QB::table($tableName)->where($foreignKey, '=', $this->id)->get();
 
@@ -209,13 +230,13 @@ class Model
     public function save()
     {
         if($this->id)
-            //lets updated the row in the db
+            //we need to update the model in the db
             return QB::table($this->table)
                      ->set($this->attributes)
                      ->where('id', '=', $this->id)
                      ->update();
         else
-            //lets insert a new model into db
+            //we need to insert into db, its a new model
             return QB::table($this->table)
                      ->insert($this->attributes);
     }
@@ -229,12 +250,8 @@ class Model
     public function delete()
     {
         if($this->id){
-            //lets just delete the row from the db and delete the attributes on the model
-            $result = QB::table($this->table)
-                     ->where('id', '=', $this->id)
-                     ->delete();
+            $result = QB::table($this->table)->where('id', '=', $this->id)->delete();
 
-            //lets clear out the attributes
             $this->attributes = [];
 
             return $result;
@@ -282,32 +299,43 @@ class Model
     /**
      * Utility for parsing the query results into model response
      *
-     * @param Model $modelInstance
      * @param array $queryResult 
      * @return mixed
      */
     private function packResults($queryResult)
     {
-        //lets check for multidimensional array 
-        if(isMultidimensional($queryResult)){
-            //we need to return array of models
-            $packedResult = [];
-
-            //lets pack the result set
-            foreach($queryResult as $result){
-                $model = new static;
-                $model->attributes = $result;
-                $packedResult[] = $model;
+        if($queryResult){
+            if(isMultidimensional($queryResult))
+                return $this->packModelsIntoArray($queryResult);
+            else{
+                //we have a single assoc array, convert it to model and return it
+                $this->attributes = $queryResult;
+                return $this;
             }
+        }
 
-            return $packedResult;
+        //query returned false, just pass it along
+        return false;
+    }
+
+
+    /**
+     * Create an array of models
+     *
+     * @param array $queryResult 
+     * @return array of models
+     */
+    private function packModelsIntoArray($queryResult)
+    {
+        $packedResult = [];
+
+        foreach($queryResult as $result){
+            $model = new static;
+            $model->attributes = $result;
+            $packedResult[] = $model;
         }
-        else{
-            //return just one instance of the model
-            $this->attributes = $queryResult;
-            return $this;
-        }
-        
+
+        return $packedResult;
     }
 
 
@@ -317,7 +345,7 @@ class Model
      * @param string $foreignKey 
      * @return string
      */
-    private function createForeignKey($foreignKey)
+    private function createHasManyForeignKey($foreignKey)
     {
         if($foreignKey == ""){
             $modelName = $this->extractModelName(get_class($this));

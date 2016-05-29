@@ -43,19 +43,25 @@ class IntroController extends BaseController
 
     public function user($id)
     {
-        $users = User::find(1);
+        //$users = User::find(1);
 
-        return json($users);
+        $result = User::whereEmail('marko@example.com');
+
+        if($result)
+            return json($result);
+        else
+            return "We dont have requested user!";
     }
 
 
     public function post()
     {
-        $user = Post::find(1)->user();
-
-        var_dump($user);
-
-        return "Hey {$user->name}, you created some posts on our site!";
+        $user = Post::find(3)->user();
+        
+        if($user)
+            return "Hey {$user->name}, you created some posts on our site!";
+        else
+            return "No such user!";
     }
 
     
