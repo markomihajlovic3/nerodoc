@@ -28,7 +28,7 @@ class Model
         $this->db = DB::getInstance();
 
         //lets parse the table name the default way, adding s at the end
-        $this->table = $this->extractModelName(get_class($this)) . 's';
+        $this->table = strtolower($this->extractModelName(get_class($this)) . 's');
     }
 
 
@@ -87,6 +87,7 @@ class Model
     //test method
     public function testQB()
     {
+        //return QB::table('users AS u, posts AS p')->select('u.username', 'u.email', 'p.title')->get();
         return QB::table($this->table)->select('username','bio')->where('id', '=', 1)->get();
     }
 
@@ -292,7 +293,7 @@ class Model
     {
         $exploded = explode('\\', $fullModelName);
 
-        return strtolower($exploded[count($exploded) - 1]);
+        return $exploded[count($exploded) - 1];
     }
 
 

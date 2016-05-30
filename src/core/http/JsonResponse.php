@@ -69,14 +69,12 @@ class JsonResponse extends Response
      */
     private function isArrayOfModels($array)
     {
-        $result = true;
-
-        foreach($array as $subarray){
-            if(!is_subclass_of($subarray, 'Nero\App\Models\Model'))
-                $result = false;
+        foreach($array as $element){
+            if(!is_subclass_of($element, 'Nero\App\Models\Model'))
+                return false;
         }
 
-        return $result;
+        return true;
     }
 
 

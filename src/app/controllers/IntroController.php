@@ -43,14 +43,9 @@ class IntroController extends BaseController
 
     public function user($id)
     {
-        //$users = User::find(1);
+        $result = (new User)->testQB();
 
-        $result = User::whereEmail('marko@example.com');
-
-        if($result)
-            return json($result);
-        else
-            return "We dont have requested user!";
+        return json($result);
     }
 
 

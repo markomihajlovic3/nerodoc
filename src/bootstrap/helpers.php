@@ -12,8 +12,8 @@ use Nero\Core\Http\ViewResponse;
  */
 function basePath()
 {
-    $config = require __DIR__ . "/../config/conf.php";
-    return $config['base_path'];
+    //$config = require __DIR__ . "/../config/conf.php";
+    return config('base_path');
 }
 
 
@@ -117,6 +117,23 @@ function redirect($to = "")
 
 
 /**
+ * Utility function for accessing config
+ *
+ * @param string $key 
+ * @return mixed
+ */
+function config($key = "")
+{
+    $config = require __DIR__ . "/../config/conf.php";
+
+    if($key != "")
+        return $config[$key];
+
+    return $config;
+}
+
+
+/**
  * Utility for checking if the array is multidimensional
  *
  * @param array $array 
@@ -131,6 +148,13 @@ function isMultidimensional(array $array)
 }
 
 
+/**
+ * Check if a string starts with another one
+ *
+ * @param string $pattern 
+ * @param string $string 
+ * @return bool
+ */
 function stringStartsWith($pattern, $string)
 {
     if(strpos($string, $pattern) === 0)
@@ -143,13 +167,11 @@ function stringStartsWith($pattern, $string)
 /**
  * Check if the app is in development mode,used for error feedback
  *
- * @return string
+ * @return bool
  */
 function inDevelopment()
 {
-    $config = require __DIR__ . '/../config/conf.php';
-
-    if($config['build'] == 'development')
+    if(config('build') == 'development')
         return true;
     else
         return false;

@@ -85,11 +85,10 @@ class DB
     {
         try{
             //get the config parameters
-            $config = require '../src/config/conf.php';
-            $hostname = $config['db_hostname'];
-            $dbname   = $config['db_name'];
-            $username = $config['db_username'];
-            $password = $config['db_password'];
+            $hostname = config('db_hostname');
+            $dbname   = config('db_name');
+            $username = config('db_username');
+            $password = config('db_password');
 
             //instantiate the pdo - connect
             $this->pdo = new \PDO("mysql:host=$hostname;dbname=$dbname", $username, $password);

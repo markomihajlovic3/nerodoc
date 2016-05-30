@@ -20,6 +20,14 @@ class App
 
 
     /**
+     * Array of bootstrapers to be booted up before we handle a request
+     */
+    private $bootsrapers = [
+        'Nero\Bootstrap\StartSession',
+    ];
+
+
+    /**
      * Constructor, injected with router implementation and IoC container
      *
      * @param IRouter $router 
@@ -30,11 +38,13 @@ class App
         $this->router = $router;
         $this->container = $container;
         $this->dispatcher = $this->container['Dispatcher'];
+
+        $this->bootstrap();
     }
     
     
     /**
-     * High level function for handling a http request
+     * High level method for handling a http request
      *
      * @param Request $request
      * @return Nero\Core\Http\Response
@@ -49,5 +59,19 @@ class App
 
         //lets return the response we got
         return $response;
+    }
+
+
+    /**
+     * Run bootstrapers
+     *
+     * @return void
+     */
+    private function bootstrap()
+    {
+        foreach($this->bootsrapers as $bootstraper){
+            $instance = new $bootstraper;
+            $instance->boot($this->container);
+        }
     }
 }
