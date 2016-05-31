@@ -15,4 +15,12 @@ Router::registerRoute('get', '/redirect', 'IntroController@redirect');
 Router::registerRoute('get', '/text', 'IntroController@text');
 Router::registerRoute('get', '/user/{id}', 'IntroController@user');
 Router::registerRoute('get', '/post', 'IntroController@post');
+Router::registerRoute('get', '/testlogin', 'IntroController@testLogin');
 
+Router::registerRoute('get', '/login', 'IntroController@showLogin');
+Router::registerRoute('get', '/register', 'IntroController@showRegister');
+Router::registerRoute('post', '/register', 'IntroController@store');
+Router::registerRoute('post', '/login', 'IntroController@login');
+
+Router::registerRoute('get', '/session', 'IntroController@session');
+Router::registerRoute('get', '/logout', 'IntroController@logout');

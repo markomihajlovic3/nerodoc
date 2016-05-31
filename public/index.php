@@ -21,17 +21,17 @@ require_once __DIR__ . "/../vendor/autoload.php";
 $container = require_once  __DIR__ . "/../src/bootstrap/container.php";
 
 
-//load up the helper functions
+//load up helper functions
 require_once __DIR__ . "/../src/bootstrap/helpers.php";
 
 
 //bootstrap the application
 try {
     //get the instance of the app from the container 
-    $app = $container['App'];
+    $app = container('App');
 
     //get the request
-    $request = $container['Request'];
+    $request = container('Request');
 
     //lets handle the request
     $response = $app->handle($request);

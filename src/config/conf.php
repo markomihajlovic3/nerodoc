@@ -13,12 +13,17 @@ return [
     'db_hostname' => 'localhost',
     'db_username' => 'root',
     'db_password' => 'street27',
-    'db_name'     => 'larablog',
+    'db_name'     => 'nerodev',
 
     //default route config(used with Basic Router)
     'default_controller' => 'Welcome',
     'default_method'     => 'index',
 
-    //site config
-    'base_path' => 'http://localhost/nero/public/'
+    //site base path config
+    'base_path' => 'http://localhost/nero/public/',
+
+    //auth config
+    'auth_table' => 'users',
+    'auth_key' => 'email',
+    'auth_return_model' => 'User' 
 ];

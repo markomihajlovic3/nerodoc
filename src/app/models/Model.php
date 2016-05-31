@@ -104,6 +104,23 @@ class Model
 
 
     /**
+     * Create a model from array
+     *
+     * @param array $data 
+     * @return Model instance
+     */
+    public static function fromArray(array $data)
+    {
+        $instance = new static;
+
+        $instance->attributes = $data;
+
+        return $instance;
+    }
+
+
+
+    /**
      * Get all models
      *
      * @return array

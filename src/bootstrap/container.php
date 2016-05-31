@@ -29,5 +29,17 @@ $container['Dispatcher'] = function($c){
 };
 
 
+$container['Auth'] = function($c){
+    return new Nero\Services\Auth;
+};
+
+
+$container['Session'] = function($c){
+    return new Nero\Services\Session;
+};
+
+
+
+
 //lets return the container 
 return $container;
