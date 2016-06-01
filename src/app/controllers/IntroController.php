@@ -66,20 +66,24 @@ class IntroController extends BaseController
 
     public function showLogin()
     {
+        
+
         return view()->add('login');
     }
 
 
     public function login(Request $request, Auth $auth)
     {
-        $email = $request->request->get('email');
+        $username = $request->request->get('username');
         $password = $request->request->get('password');
 
-        if($auth->login($email, $password)){
+        if($auth->login($username, $password)){
+            flash('msg','You logged in!');
+            
             return redirect('session');
         }
         else
-            return "Should login $email and $password";
+            return "Should login $username and $password";
     }
 
 
@@ -97,24 +101,23 @@ class IntroController extends BaseController
     }
 
 
-    public function store(Request $request)
+    public function store(Request $request, Auth $auth)
     {
         //lets save the user
-        $data['email'] = $request->request->get('email');
+        $user['username'] = $request->request->get('username');
 
-        $data['password'] = password_hash($request->request->get('password'), PASSWORD_DEFAULT);
+        $user['password'] = $request->request->get('password');
 
 
-        $result = QB::table('users')->insert($data);
-
-        return redirect('login');
+        if($auth->register($user))
+            return redirect('login');
+        else
+            return "Cant register a new user!";
     }
 
 
     public function session()
     {
-        echo "SESSION part";
-
         return view()->add('session');
     }
 

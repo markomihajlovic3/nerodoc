@@ -28,6 +28,15 @@ class App
 
 
     /**
+     * Array of terminators to be run after we handle the request
+     *
+     */
+    private $terminators = [
+
+    ];
+
+
+    /**
      * Constructor, injected with router implementation and IoC container
      *
      * @param IRouter $router 
@@ -72,6 +81,20 @@ class App
         foreach($this->bootsrapers as $bootstraper){
             $instance = new $bootstraper;
             $instance->boot($this->container);
+        }
+    }
+
+
+    /**
+     * Run terminators
+     *
+     * @return void
+     */
+    public function terminate()
+    {
+        foreach($this->terminators as $terminator){
+            $instance = new $terminator;
+            $instance->run();
         }
     }
 }

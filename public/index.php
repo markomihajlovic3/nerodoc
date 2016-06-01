@@ -38,6 +38,9 @@ try {
 
     //send the response back to the user
     $response->send();
+
+    //lets terminate the app
+    $app->terminate();
 }
 catch(\Exception $e){
     if($e->getCode() == 404)
@@ -49,6 +52,6 @@ catch(\Exception $e){
         extract($data);
         require "../src/app/views/nero/error.php";
     }
-
 }
+
 

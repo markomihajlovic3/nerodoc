@@ -9,6 +9,24 @@ use Nero\Core\Database\QB;
 class Auth
 {
     /**
+     * Register a new user
+     *
+     * @param array $data 
+     * @return bool
+     */
+    public function register(array $data)
+    {
+        //get the auth config 
+        $authTable = config('auth_table');
+
+        //hash the password
+        $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
+
+        return QB::table($authTable)->insert($data);
+    }
+
+
+    /**
      * Implement logging in of a user
      *
      * @param string $key 
@@ -22,15 +40,17 @@ class Auth
         $authKey = config('auth_key');
 
         //query db 
-        $queryResult = QB::table($authTable)->where($authKey, '=', $key)->get();
+        $queryResult = QB::table($authTable)->where($authKey, '=', $key)->limit(1)->get();
 
         //check password
-        if(password_verify($password, $queryResult['password'])){
-            container('Session')->set("user", $queryResult);;
-            return true;
+        if($queryResult){
+            if(password_verify($password, $queryResult['password'])){
+                container('Session')->set("user", $queryResult);;
+                return true;
+            }
         }
-        else
-            return false;
+
+        return false;
     }
 
 
@@ -41,18 +61,6 @@ class Auth
     public function logout()
     {
         session_destroy();
-    }
-
-
-    /**
-     * Register a new user
-     *
-     * @param array $data 
-     * @return bool
-     */
-    public function register(array $data)
-    {
-        
     }
 
 
@@ -83,7 +91,6 @@ class Auth
         
         if($userData = $session->get('user')){
             $model = $this->createModel($userData);
-
             return $model;
         }
 
@@ -99,7 +106,7 @@ class Auth
      */
     private function createModel(array $data)
     {
-        $modelName = config('auth_return_model');
+        $modelName = ucfirst(config('auth_return_model'));
 
         $fullModelName = "Nero\App\Models\\$modelName";
 

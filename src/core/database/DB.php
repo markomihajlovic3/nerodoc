@@ -48,7 +48,6 @@ class DB
                 $this->result = false;
 
 
-            //lets return our results
             return $this->getResults();
         }
         catch(\PDOException $e){
@@ -64,14 +63,9 @@ class DB
      */
     private function getResults()
     {
-        if(count($this->result) > 1)
-            //return an array 
-            return $this->result;
-        else if(count($this->result) == 1)
-            //return single result
+        if(count($this->result) == 1 && is_array($this->result))
             return $this->result[0];
 
-        //else just return what we got from the query
         return $this->result;
     }
 

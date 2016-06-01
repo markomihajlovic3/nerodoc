@@ -22,6 +22,7 @@ class QB
     private $whereClauses;
     private $orderBy;
     private $groupBy;
+    private $limit = null;
     private $bindings = [];
     private $operators = ['=', '<=' , '>=', '<', '>', '<>', 'LIKE'];
     private $sql;
@@ -367,6 +368,15 @@ class QB
     }
 
 
+    public function limit($value)
+    {
+        $this->limit = "LIMIT {$value}";
+
+        return $this;
+    }
+
+
+
     /**
      * Method for retrieving results from the query
      *
@@ -379,8 +389,8 @@ class QB
         if(!isset($this->select))
             $this->select = "SELECT * ";
 
-        //this (SQL generation) should be extracted into its own function        
-        $this->sql = "{$this->select} FROM {$this->tables} {$this->whereClauses} {$this->orderBy} {$this->groupBy};";
+        //generate sql
+        $this->sql = "{$this->select} FROM {$this->tables} {$this->whereClauses} {$this->orderBy} {$this->groupBy} {$this->limit};";
 
         //for testing
         $this->echoSQL();

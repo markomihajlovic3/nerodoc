@@ -124,7 +124,7 @@ function redirect($to = "")
  */
 function config($key = "")
 {
-    $config = require __DIR__ . "/../config/conf.php";
+    $config = require __DIR__ . "/../app/conf.php";
 
     if($key != "")
         return $config[$key];
@@ -175,4 +175,30 @@ function inDevelopment()
         return true;
     else
         return false;
+}
+
+
+/**
+ * Flash a message to session
+ *
+ * @param string $name 
+ * @param string $value 
+ * @return mixed
+ */
+function flash($name, $value = "")
+{
+    $session = container('Session');
+
+    if(isset($name) && $value != ""){
+        //set a new flash message
+        $session->destroyFlash();
+        $session->flash($name, $value);
+        return true;
+    }
+    else if(isset($name) && $value == ""){
+        //retrive the flash message and destroy it
+        $flash = $session->getFlash($name);
+        $session->destroyFlash();
+        return $flash;
+    }
 }

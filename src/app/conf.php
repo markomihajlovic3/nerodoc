@@ -25,5 +25,5 @@ return [
     //auth config
     'auth_table' => 'users',
     'auth_key' => 'email',
-    'auth_return_model' => 'User' 
+    'auth_return_model' => 'user' 
 ];
