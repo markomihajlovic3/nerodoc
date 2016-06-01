@@ -2,7 +2,8 @@
 
 namespace Nero\Core\Routing;
 
-use Pimple\Container;
+
+use Nero\Core\Reflection\Resolver;
 
 /***************************************************************************
  * Dispatcher is responsible for dispatching the route
@@ -18,22 +19,9 @@ use Pimple\Container;
  ****************************************************************************/
 class Dispatcher
 {
-    private $container = null;
-    private $controller = null;
+    private $resolver = null;
     private $method = "";
-    private $params = [];
-
-
-    /**
-     * Constructor, injected with a container
-     *
-     * @param Pimple\Container $container
-     * @return void
-     */
-    public function __construct(Container $container)
-    {
-        $this->container = $container;
-    }
+    private $urlParameters = [];
 
 
     /**
@@ -47,85 +35,60 @@ class Dispatcher
         //contains the full name of the controller to be used by the reflection api
         $controllerName = "Nero\\App\\Controllers\\". ucfirst($route['controller']);
 
-        //contains the instance of the controller used for the invocation of the method on it
-        $this->controller = $this->loadController($route['controller']);
-
         //contains the name of the method that should be invoked
-        $this->method     = $route['method'];
+        $this->method = $route['method'];
 
         //contains parameters extracted from the url
-        $this->params     = $route['params'];
+        $this->urlParameters = $route['params'];
 
-        //inspect the methods expected parameters using reflection
-        $reflectionMethod = new \ReflectionMethod($controllerName, $this->method);
-        $expectedParameters = $reflectionMethod->getParameters();
+        //lets create the resolver which will do all the reflection work for us
+        $this->resolver = new Resolver($controllerName, $this->method);
 
-        //lets first compare the expected route parameters with the ones from the supplied route
-        $expectedRouteParametersCount = 0;
-        foreach($expectedParameters as $parameter){
-            if($parameter->getClass() == false)
-                $expectedRouteParametersCount++;
-        }
-        
-        //throw 404 exception if there is a mismatch between expected route parameters and supplied parameters
-        if(count($this->params) != $expectedRouteParametersCount){
-            if(inDevelopment())
-                throw new \Exception("Expected parameters mismatch.");
-            else
-                throw new \Exception("404", 404);
-        }
-
-
-        //we can resolve the expected classes from the IoC container
-        foreach($expectedParameters as $parameter){
-            if($parameter->getClass()){
-                //if the expected parameter is a class resolve it from the IoC container and add it to the params
-                $className = $this->extractClassName($parameter->getClass()->name);
-                if($this->container[$className])
-                    $this->params[] = $this->container[$className];
-                else
-                    throw new \Exception("$className service provider not registered!");
-            }
-        }
+        //throw 404 exception if there is a mismatch between expected url parameters and supplied parameters
+        $this->checkForParameterCountMismatch();
 
         //finaly lets invoke the method with the all the parameters and get the response
-        $response = $reflectionMethod->invokeArgs($this->controller, $this->params);
+        $response = $this->invokeMethod();
 
         //if its a simple string, wrap it into the response class
         if(is_string($response))
             return new \Nero\Core\Http\Response($response);
+
 
         return $response;
     }
 
 
     /**
-     * Get the class name only, without namespace
+     * Merge the final parameter array and invoke the method with it
      *
-     * @param string $fullClassName 
-     * @return string
+     * @return mixed
      */
-    private function extractClassName($fullClassName)
+    private function invokeMethod()
     {
-        $bits = explode('\\',$fullClassName);
-        return $bits[count($bits) - 1];
+        //lets resolve class parameters and create the final array of parameters(containing url and class parameters)
+        $resolvedObjects = $this->resolver->resolveClassParameters();
+
+        //merge url and class parameters
+        $parameters = array_merge($this->urlParameters, $resolvedObjects);
+
+        //lets finally invoke the method and return its response
+        return $this->resolver->invoke($parameters);
     }
 
 
     /**
-     * Load the controller class based on name
+     * Throw exception if there is a url parameter mismatch
      *
-     * @param string $controllerName 
-     * @return Controller object
+     * @return void
      */
-    private function loadController($controllerName)
+    private function checkForParameterCountMismatch()
     {
-        $className = "Nero\\App\\Controllers\\" . ucfirst($controllerName);
-        if(class_exists($className))
-            return new $className;
-        else{
+        $nonClassParameterCount = $this->resolver->nonClassParameterCount();
+
+        if(count($this->urlParameters) != $nonClassParameterCount){
             if(inDevelopment())
-                throw new \Exception("Controller '$controllerName' does not exist.");
+                throw new \Exception("Expected parameters mismatch.");
             else
                 throw new \Exception("404", 404);
         }

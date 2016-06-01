@@ -43,18 +43,10 @@ class IntroController extends BaseController
     }
 
 
-    public function user($id, Auth $auth)
+    public function user($id, Request $request)
     {
-        $result = (new User)->testQB();
-
-
-
-        if($auth->login('marko@example.com', 'password'))
-            echo "We loged you in!<br/>";
-        else
-            echo "Not logged in!<br/>";
-
-        return json($result);
+        $path = $request->getPathInfo();
+        return "You asked for a user ID = {$id}<br/>And your path = $path";
     }
 
 
@@ -74,16 +66,16 @@ class IntroController extends BaseController
 
     public function login(Request $request, Auth $auth)
     {
-        $username = $request->request->get('username');
+        $email = $request->request->get('email');
         $password = $request->request->get('password');
 
-        if($auth->login($username, $password)){
-            flash('msg',['first'=>'haha', 'second'=>'you win']);
+        if($auth->login($email, $password)){
+            flash('msg','You are logged in!');
             
             return redirect('session');
         }
         else
-            return "Should login $username and $password";
+            return "Should login $email and $password";
     }
 
 
@@ -104,7 +96,7 @@ class IntroController extends BaseController
     public function store(Request $request, Auth $auth)
     {
         //lets save the user
-        $user['username'] = $request->request->get('username');
+        $user['email'] = $request->request->get('email');
 
         $user['password'] = $request->request->get('password');
 

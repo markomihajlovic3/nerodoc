@@ -25,7 +25,7 @@ $container['Request'] = function($c){
 
 
 $container['Dispatcher'] = function($c){
-    return new Nero\Core\Routing\Dispatcher($c);
+    return new Nero\Core\Routing\Dispatcher;
 };
 
 
