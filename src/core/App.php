@@ -48,6 +48,7 @@ class App
         $this->container = $container;
         $this->dispatcher = $this->container['Dispatcher'];
 
+        //lets run bootstrapers
         $this->bootstrap();
     }
     

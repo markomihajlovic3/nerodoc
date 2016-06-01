@@ -78,7 +78,7 @@ class IntroController extends BaseController
         $password = $request->request->get('password');
 
         if($auth->login($username, $password)){
-            flash('msg','You logged in!');
+            flash('msg',['first'=>'haha', 'second'=>'you win']);
             
             return redirect('session');
         }

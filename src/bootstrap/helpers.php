@@ -179,7 +179,7 @@ function inDevelopment()
 
 
 /**
- * Flash a message to session
+ * Flash a message to session,or retrieve it from session
  *
  * @param string $name 
  * @param string $value 
@@ -189,9 +189,8 @@ function flash($name, $value = "")
 {
     $session = container('Session');
 
-    if(isset($name) && $value != ""){
+    if(isset($name) && $value != "" || is_array($value)){
         //set a new flash message
-        $session->destroyFlash();
         $session->flash($name, $value);
         return true;
     }
@@ -201,4 +200,5 @@ function flash($name, $value = "")
         $session->destroyFlash();
         return $flash;
     }
+
 }
