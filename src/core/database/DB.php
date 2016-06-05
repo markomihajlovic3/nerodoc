@@ -37,8 +37,11 @@ class DB
     {
         try{
             $stmt = $this->pdo->prepare($sql);
+
             if($stmt->execute($arguments)){
-                if(stringStartsWith('INSERT', $sql) || stringStartsWith('UPDATE', $sql) || stringStartsWith('DELETE', $sql))
+                if(stringStartsWith('INSERT', $sql))
+                    $this->result = $this->pdo->lastInsertId();
+                else if(stringStartsWith('UPDATE', $sql) || stringStartsWith('DELETE', $sql))
                     $this->result = true;
                 else
                     //we have results to fetch

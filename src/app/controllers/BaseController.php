@@ -4,26 +4,53 @@ namespace Nero\App\Controllers;
 
 
 /*******************************************************
- * Base controller implements the basic functionality
- * of loading up models
- * Users will extend the BaseControllers and implement
- * their own logic.
+ * Base controller implements validation logic for now
  ******************************************************/
 class BaseController
 {
+    
     /**
-     * Load up a model
+     * Validate input data against specified rules, work in progress
      *
-     * @param string $name 
-     * @return Model object
+     * @param array $data 
+     * @param array $rules 
+     * @return bool
      */
-    public function model($name)
+    protected function validate($data, $rules = [])
     {
-        $className = "Nero\\App\\Models\\" . ucfirst($name) . ucfirst('Model');
-        if(class_exists($className))
-            return new $className;
-        else
-            throw new \Exception("Model does not exist.");
+        foreach($data as $key => $value){
+            $relevantRules = $rules[$key];
+
+            foreach(explode('|', $relevantRules) as $singleRule){
+                if(!$this->processRule($value, $singleRule))
+                    return false;
+
+            }
+        }
+
+        return true;
+    }
+
+
+    /**
+     * Process single rule against data
+     *
+     * @param mixed $data 
+     * @param string $rule 
+     * @return bool
+     */
+    private function processRule($data, $rule)
+    {
+        switch($rule){
+            case 'required':
+                if(!empty($data))
+                    return true;
+
+                return false;
+                break;
+
+                //here we will add other validation options
+        }
     }
 
 }

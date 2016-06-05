@@ -2,12 +2,6 @@
 
 namespace Nero\App\Controllers;
 
-use \Nero\App\Models\User;
-use \Nero\App\Models\Post;
-use \Nero\Core\Database\DB;
-use \Nero\Core\Database\QB;
-use \Nero\Services\Auth;
-use Symfony\Component\HttpFoundation\Request;
 
 //simple controller that demonstrates different responses 
 class IntroController extends BaseController
@@ -41,89 +35,5 @@ class IntroController extends BaseController
         //lets just return string, which will be converted to response behind the scenes
         return "Welcome to Nero!";
     }
-
-
-    public function user($id, Request $request)
-    {
-        $path = $request->getPathInfo();
-        return "You asked for a user ID = {$id}<br/>And your path = $path";
-    }
-
-
-    public function testLogin()
-    {
-        return "Welcome to login !";
-    }
-
-
-    public function showLogin()
-    {
-        
-
-        return view()->add('login');
-    }
-
-
-    public function login(Request $request, Auth $auth)
-    {
-        $email = $request->request->get('email');
-        $password = $request->request->get('password');
-
-        if($auth->login($email, $password)){
-            flash('msg','You are logged in!');
-            
-            return redirect('session');
-        }
-        else
-            return "Should login $email and $password";
-    }
-
-
-    public function logout()
-    {
-        session_destroy();
-
-        return redirect('login');
-    }
-
-
-    public function showRegister()
-    {
-        return view()->add('register');
-    }
-
-
-    public function store(Request $request, Auth $auth)
-    {
-        //lets save the user
-        $user['email'] = $request->request->get('email');
-
-        $user['password'] = $request->request->get('password');
-
-
-        if($auth->register($user))
-            return redirect('login');
-        else
-            return "Cant register a new user!";
-    }
-
-
-    public function session()
-    {
-        return view()->add('session');
-    }
-
-
-    public function post()
-    {
-        $user = Post::find(3)->user();
-        
-        if($user)
-            return "Hey {$user->name}, you created some posts on our site!";
-        else
-            return "No such user!";
-    }
-
-    
 
 }

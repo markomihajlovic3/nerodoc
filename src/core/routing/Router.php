@@ -4,6 +4,7 @@ namespace Nero\Core\Routing;
 
 use Symfony\Component\HttpFoundation\Request;
 
+
 /********************************************************************
  * Router inspired by the Laravel routing implementation.
  * You register your routes in a separate file and the router
@@ -26,17 +27,20 @@ class Router implements RouterInterface
      * @param string $handler
      * @return void
      */
-    public static function registerRoute($method, $url, $handler)
+    public static function register($method, $url, $handler)
     {
         //lets setup a route from the info we got
-        $route = new \stdClass;
+        $route = new Route;
         $route->method = $method;
         $route->url = $url;
         $route->handler = $handler;
         $route->patternRegEx = static::generateRegExPattern($url);
-
+        
         //lets add the route to the collection
         static::$routes[] = $route;
+
+        //return route to allow adding of request filters to the route
+        return $route;
     }
 
 
@@ -58,7 +62,8 @@ class Router implements RouterInterface
         return [
             'controller' => $this->getController($route),
             'method'     => $this->getHandlingMethod($route),
-            'params'     => $route->params
+            'params'     => $route->params,
+            'filters'    => $route->filters
         ];
     }
   

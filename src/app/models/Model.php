@@ -253,10 +253,14 @@ class Model
                      ->set($this->attributes)
                      ->where('id', '=', $this->id)
                      ->update();
-        else
-            //we need to insert into db, its a new model
-            return QB::table($this->table)
-                     ->insert($this->attributes);
+        else{
+            //we need to insert into db, it is a new model
+            $lastInsertedId = QB::table($this->table)->insert($this->attributes);
+            
+            $this->attributes['id'] = $lastInsertedId;
+
+            return $lastInsertedId;
+        }
     }
 
 

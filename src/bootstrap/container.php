@@ -15,7 +15,7 @@ $container["RouterInterface"] = function($c){
 
 
 $container['App'] = function($c){
-    return new Nero\Core\App($c['RouterInterface'], $c);
+    return new Nero\Core\App($c['RouterInterface']);
 };
 
 

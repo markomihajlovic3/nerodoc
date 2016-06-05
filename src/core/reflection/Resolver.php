@@ -25,7 +25,7 @@ class Resolver
 
 
     /**
-     * Get the methods expected non class parameter count
+     * Get the targeted method expected non class parameter count
      *
      * @return int
      */
@@ -72,13 +72,27 @@ class Resolver
     }
 
 
+
+    /**
+     * Resolve the dependencies and invoke the method
+     *
+     * @return mixed
+     */
+    public function resolveInvoke()
+    {
+        $resolvedObjects = $this->resolveClassParameters();
+
+        return $this->invoke($resolvedObjects);
+    }
+
+
     /**
      * Invoke the method and return its results
      *
      * @param array $parameters 
      * @return mixed
      */
-    public function invoke(array $parameters)
+    public function invoke(array $parameters = [])
     {
         $object = null;
 
