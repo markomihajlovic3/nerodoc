@@ -12,8 +12,8 @@ return [
     //database config
     'db_hostname' => 'localhost',
     'db_username' => 'root',
-    'db_password' => '',
-    'db_name'     => '',
+    'db_password' => 'street27',
+    'db_name'     => 'nerodev',
 
     //default route config(used with Basic Router)
     'default_controller' => 'Welcome',

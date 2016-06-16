@@ -51,7 +51,7 @@ class DB
                 $this->result = false;
 
 
-            return $this->getResults();
+            return $this->result;
         }
         catch(\PDOException $e){
             echo 'Database error. ' . $e->getMessage();
@@ -66,9 +66,8 @@ class DB
      */
     private function getResults()
     {
-        if(count($this->result) == 1 && is_array($this->result))
-            return $this->result[0];
-
+        //if(count($this->result) == 1 && is_array($this->result))
+        //  return $this->result[0];
         return $this->result;
     }
 

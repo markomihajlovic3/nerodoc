@@ -331,13 +331,13 @@ class Model
                 return $this->packModelsIntoArray($queryResult);
             else{
                 //we have a single assoc array, convert it to model and return it
-                $this->attributes = $queryResult;
+                $this->attributes = $queryResult[0];
                 return $this;
             }
         }
 
-        //query returned false, just pass it along
-        return false;
+        //query returned false, no results, return empty array
+        return [];
     }
 
 
@@ -354,6 +354,7 @@ class Model
         foreach($queryResult as $result){
             $model = new static;
             $model->attributes = $result;
+
             $packedResult[] = $model;
         }
 

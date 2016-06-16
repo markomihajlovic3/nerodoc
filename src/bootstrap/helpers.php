@@ -202,3 +202,36 @@ function flash($name, $value = "")
     }
 
 }
+
+
+function errors()
+{
+    $session = container('Session');
+
+    $errors = $session->getErrors();
+
+    $session->destroyErrors();
+
+    if($errors)
+        return $errors;
+
+    return [];
+}
+
+
+function error($value)
+{
+    container('Session')->error($value);
+}
+
+
+function modelsToArray(array $models)
+{
+    $data = [];
+
+    foreach($models as $model)
+        $data[] = $model->toArray();
+
+    return $data;
+}
+

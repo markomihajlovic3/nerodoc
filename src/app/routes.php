@@ -13,3 +13,7 @@ Router::register('get', '/json', 'IntroController@json');
 Router::register('get', '/redirect', 'IntroController@redirect');
 Router::register('get', '/text', 'IntroController@text');
 
+
+//dev
+Router::register('get', '/index', 'DevController@index');
+Router::register('get', '/show', 'DevController@show');

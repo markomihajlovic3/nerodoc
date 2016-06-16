@@ -71,5 +71,26 @@ class Session
         unset($_SESSION['flash']);
     }
 
+    
+    public function error($value)
+    {
+        $_SESSION['errors'][] = $value;
+    }
+
+
+    public function getErrors()
+    {
+        if(isset($_SESSION['errors']))
+            return $_SESSION['errors'];
+
+        return false;
+    }
+
+
+    public function destroyErrors()
+    {
+        unset($_SESSION['errors']);
+    }
+
 
 }
