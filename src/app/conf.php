@@ -11,16 +11,16 @@ return [
 
     //database config
     'db_hostname' => 'localhost',
-    'db_username' => '',
-    'db_password' => '',
-    'db_name'     => '',
+    'db_username' => 'root',
+    'db_password' => 'street27',
+    'db_name'     => 'nerodoc',
 
     //default route config(used with Basic Router)
     'default_controller' => 'Welcome',
     'default_method'     => 'index',
 
     //site base path config
-    'base_path' => 'http://localhost/nero/public/',
+    'base_path' => 'http://localhost/nerodoc/public/',
 
     //auth config
     'auth_table' => 'users',

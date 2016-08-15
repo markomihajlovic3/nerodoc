@@ -7,13 +7,20 @@ use Nero\Core\Routing\Router;
  * It's really easy, supply the http method(verb), url, and controller@method.
  ****************************************************************************/
 
-//simple routes demonstrate different possible responses(views, json, redirects and simple text)
-Router::register('get', '/', 'IntroController@welcome');
-Router::register('get', '/json', 'IntroController@json');
-Router::register('get', '/redirect', 'IntroController@redirect');
-Router::register('get', '/text', 'IntroController@text');
+//static pages
+Router::register('get', '/', 'PagesController@home');
 
 
-//dev
-Router::register('get', '/index', 'DevController@index');
-Router::register('get', '/show', 'DevController@show');
+//auth pages
+Router::register('get', '/auth/register', 'AuthController@register');
+Router::register('post', '/auth/register', 'AuthController@store');
+Router::register('get', '/auth/login', 'AuthController@showLogin');
+
+
+//documentation
+Router::register('get', '/docs', 'DocsController@index');
+Router::register('get', '/docs/installation', 'DocsController@installation');
+
+
+//forum pages
+Router::register('get', '/forum', 'ForumController@index')->filters('AuthFilter');

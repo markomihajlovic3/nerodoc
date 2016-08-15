@@ -23,7 +23,7 @@ class Auth
         $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
 
         //we dont need password confirmation
-        unset($data['password_confirmation');
+        unset($data['password_confirmation']);
 
         return QB::table($authTable)->insert($data);
     }

@@ -25,7 +25,10 @@ function basePath()
  */
 function url($path)
 {
-    return basePath() . $path;
+    if($path != '/')
+        return basePath() . $path;
+
+    return basePath();
 }
 
 
@@ -77,7 +80,7 @@ function css($path)
  */
 function javascript($path)
 {
-    return "<script src=\"" . $path . "\"></script>";
+    return "<script src=\"" . basePath() . $path . "\"></script>";
 }
 
 

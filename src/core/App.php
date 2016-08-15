@@ -25,7 +25,7 @@ class App
     /**
      * Array of bootstrapers to be booted up before we handle a request
      */
-    private $bootsrapers = [
+    private $bootstrapers = [
         'Nero\Bootstrap\StartSession',
     ];
 
@@ -69,7 +69,6 @@ class App
 
         //run the route filters
         $filterResponse = $this->runRouteFilters($route);
-
         if(is_subclass_of($filterResponse, 'Nero\\Core\\Http\\Response'))
             return $filterResponse;
 
@@ -111,7 +110,7 @@ class App
      */
     private function bootstrap()
     {
-        foreach($this->bootsrapers as $bootstraper){
+        foreach($this->bootstrapers as $bootstraper){
             $instance = new $bootstraper;
             $instance->boot($this->container);
         }

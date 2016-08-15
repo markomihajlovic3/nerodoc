@@ -16,7 +16,7 @@ class AuthFilter
     public function handle(Auth $auth)
     {
         if(!$auth->check())
-            return redirect('login');
+            return redirect('auth/login');
 
         return true;
     }

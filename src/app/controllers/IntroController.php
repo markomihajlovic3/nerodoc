@@ -6,10 +6,21 @@ namespace Nero\App\Controllers;
 //simple controller that demonstrates different responses 
 class IntroController extends BaseController
 {
-    public function welcome()
+
+    /**
+     * Welcome to the Nero framework
+     *
+     * @param creativity
+     * @param elegance
+     * @return awesome
+     */
+    public function welcome($id, Request $request)
     {
-        //lets greet the user with a view
-        return view()->add('nero/welcome');
+        //lets get the data using a Model
+        $data['user'] = User::find($id);
+
+        //lets greet the user with our new data
+        return view()->add('nero/welcome', $data);
     }
 
 
