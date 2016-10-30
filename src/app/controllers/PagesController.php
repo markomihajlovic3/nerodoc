@@ -12,5 +12,4 @@ class PagesController extends BaseController
                      ->add('partials/footer');
     }
 
-
 }

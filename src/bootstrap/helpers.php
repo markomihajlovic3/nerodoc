@@ -207,6 +207,15 @@ function flash($name, $value = "")
 }
 
 
+function hasErrors()
+{
+    if(container('Session')->getErrors())
+        return true;
+
+    return false;
+}
+
+
 function errors()
 {
     $session = container('Session');
@@ -228,6 +237,13 @@ function error($value)
 }
 
 
+function old($key)
+{
+    return container('Session')->old($key);
+}
+
+
+
 function modelsToArray(array $models)
 {
     $data = [];
@@ -238,3 +254,11 @@ function modelsToArray(array $models)
     return $data;
 }
 
+
+function inspect($data)
+{
+    if(is_array($data))
+        echo "<pre>" . print_r($data) . "</pre";
+    else
+        echo var_dump($data);
+}

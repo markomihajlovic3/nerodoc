@@ -93,4 +93,24 @@ class Session
     }
 
 
+    public function setOldInput($key, $value)
+    {
+        $_SESSION['old'][$key] = $value;
+    }
+
+
+    public function old($key)
+    {
+        if(isset($_SESSION['old'][$key]))
+            return $_SESSION['old'][$key];
+
+        return "";
+    }
+
+    public function destroyOldInput()
+    {
+        unset($_SESSION['old']);
+    }
+
+
 }

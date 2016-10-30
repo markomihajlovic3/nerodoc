@@ -75,7 +75,7 @@ class QB
         //generate sql
         $this->sql = "INSERT INTO {$this->tables} {$formatedColumnNames} VALUES {$formatedQuestionsMarks} ;";
 
-        $this->echoSQL();
+        //$this->echoSQL();
 
         return  $this->db->query($this->sql, $this->bindings);
     }
@@ -112,7 +112,7 @@ class QB
     {
         $this->sql = "UPDATE {$this->tables} {$this->set} {$this->whereClauses};";
 
-        $this->echoSQL();
+        //$this->echoSQL();
 
         return $this->db->query($this->sql, $this->bindings);
     }
@@ -127,7 +127,7 @@ class QB
     {
         $this->sql = "DELETE FROM {$this->tables} {$this->whereClauses};";
 
-        $this->echoSQL();
+        //$this->echoSQL();
 
         return $this->db->query($this->sql, $this->bindings);
     }
@@ -393,7 +393,7 @@ class QB
         $this->sql = "{$this->select} FROM {$this->tables} {$this->whereClauses} {$this->orderBy} {$this->groupBy} {$this->limit};";
 
         //for testing
-        $this->echoSQL();
+        //$this->echoSQL();
 
         //lets execute the query
         $result = $this->db->query($this->sql, $this->bindings);

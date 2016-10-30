@@ -3,6 +3,8 @@
 namespace Nero\App\Controllers;
 
 
+use Nero\Core\Database\QB;
+
 /*******************************************************
  * Base controller implements validation logic for now
  ******************************************************/

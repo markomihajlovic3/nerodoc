@@ -46,13 +46,13 @@ class Auth
         $queryResult = QB::table($authTable)->where($authKey, '=', $key)->limit(1)->get();
 
         //check password
-        if($queryResult){
-            if(password_verify($password, $queryResult['password'])){
-                container('Session')->set("user", $queryResult);;
-                return true;
-            }
+        if($queryResult && password_verify($password, $queryResult[0]['password'])){
+            container('Session')->set("user", $queryResult[0]);;
+            return true;
         }
 
+        //failed login
+        error("Your login credentials don't match our records.");
         return false;
     }
 
@@ -74,12 +74,10 @@ class Auth
      */
     public function check()
     {
-        $session = container('Session');
-
-        if($session->get('user'))
+        if(container('Session')->get('user'))
             return true;
-        else
-            return false;
+
+        return false;
     }
 
 
@@ -90,9 +88,7 @@ class Auth
      */
     public function user()
     {
-        $session = container('Session');
-        
-        if($userData = $session->get('user')){
+        if($userData = container('Session')->get('user')){
             $model = $this->createModel($userData);
             return $model;
         }
@@ -119,5 +115,4 @@ class Auth
 
         return $fullModelName::fromArray($data);
     }
-
 }

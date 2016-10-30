@@ -119,6 +119,21 @@ class Model
     }
 
 
+    /**
+     * Create and save an instance to db
+     *
+     * @param array $data 
+     * @return created isntance
+     */
+    public static function create(array $data)
+    {
+        $instance = static::fromArray($data);
+        $instance->save();
+
+        return $instance;
+    }
+
+
 
     /**
      * Get all models
@@ -145,7 +160,7 @@ class Model
     {
         $instance = new static;
         
-        $instance->attributes = QB::table($instance->table)->where('id', '=', $id)->get();
+        $instance->attributes = QB::table($instance->table)->where('id', '=', $id)->get()[0];
 
         return $instance;
     }
@@ -161,7 +176,7 @@ class Model
     {
         $instance = new static;
         
-        $instance->attributes = QB::table($instance->table)->where('id', '=', $id)->get();
+        $instance->attributes = QB::table($instance->table)->where('id', '=', $id)->get()[0];
 
         if(empty($instance->attributes))
             throw new \Exception("Lookup for an id of {$id} on table {$instance->table} failed.");
@@ -199,7 +214,7 @@ class Model
     {
         $foreignKey = $this->createForeignKey($foreignKey);
 
-        $queryResult = QB::table($tableName)->where($foreignKey, '=', $this->id)->get();
+        $queryResult = QB::table($tableName)->where($foreignKey, '=', $this->id)->limit(1)->get();
 
         return $this->packResults($queryResult);
     }
@@ -234,7 +249,7 @@ class Model
     {
         $foreignKey = $this->createBelongsToForeignKey($foreignKey, $tableName);
 
-        $queryResult = QB::table($tableName)->where('id', '=', $this->{$foreignKey})->get();
+        $queryResult = QB::table($tableName)->where('id', '=', $this->{$foreignKey})->limit(1)->get();
 
         return $this->packResults($queryResult);
     }

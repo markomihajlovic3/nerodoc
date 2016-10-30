@@ -17,7 +17,7 @@ class RedirectResponse extends Response
      * @param string $to 
      * @return void
      */
-    public function __construct($to)
+    public function __construct($to = "")
     {
         $this->redirectPath = basePath() . $to;
     }
@@ -32,6 +32,15 @@ class RedirectResponse extends Response
     public function to($location)
     {
         $this->redirectPath = basePath() . $location;
+
+        return $this;
+    }
+
+
+    public function back()
+    {
+        $request = container('Request');
+        $this->redirectPath = basePath() . ltrim($request->getPathInfo(), '/');
 
         return $this;
     }
