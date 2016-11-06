@@ -228,13 +228,13 @@ class Model
      * @param string $idColumn 
      * @return array
      */
-    public function hasMany($tableName, $foreignKey = "")
+    public function hasMany($tableName, $modelName = "", $foreignKey = "")
     {
         $foreignKey = $this->createHasManyForeignKey($foreignKey);
         
         $queryResult = QB::table($tableName)->where($foreignKey, '=', $this->id)->get();
 
-        return $this->packResults($queryResult);
+        return $this->packResults($queryResult, $modelName);
     }
 
 
@@ -245,13 +245,13 @@ class Model
      * @param string $foreignKey 
      * @return array
      */
-    public function belongsTo($tableName, $foreignKey = "")
+    public function belongsTo($tableName, $modelName = "", $foreignKey = "")
     {
         $foreignKey = $this->createBelongsToForeignKey($foreignKey, $tableName);
 
         $queryResult = QB::table($tableName)->where('id', '=', $this->{$foreignKey})->limit(1)->get();
 
-        return $this->packResults($queryResult);
+        return $this->packResults($queryResult, $modelName);
     }
 
 
@@ -339,11 +339,11 @@ class Model
      * @param array $queryResult 
      * @return mixed
      */
-    private function packResults($queryResult)
+    private function packResults($queryResult, $modelName = "")
     {
         if($queryResult){
             if(isMultidimensional($queryResult))
-                return $this->packModelsIntoArray($queryResult);
+                return $this->packModelsIntoArray($queryResult, $modelName);
             else{
                 //we have a single assoc array, convert it to model and return it
                 $this->attributes = $queryResult[0];
@@ -362,12 +362,16 @@ class Model
      * @param array $queryResult 
      * @return array of models
      */
-    private function packModelsIntoArray($queryResult)
+    private function packModelsIntoArray($queryResult, $modelName = "")
     {
         $packedResult = [];
 
         foreach($queryResult as $result){
-            $model = new static;
+	    if($modelName)
+		$model = new $modelName;
+	    else
+		$model = new static;
+
             $model->attributes = $result;
 
             $packedResult[] = $model;
@@ -408,5 +412,15 @@ class Model
         }
         else
             return $foreignKey;
+    }
+
+
+    /*
+     *
+     *
+     */
+    private function createModel($modelName)
+    {
+	return new $fullName;
     }
 }

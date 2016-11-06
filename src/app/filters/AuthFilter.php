@@ -15,8 +15,10 @@ class AuthFilter
      */
     public function handle(Auth $auth)
     {
-        if(!$auth->check())
+        if(!$auth->check()){
+	    flash('access', 'You must be logged in to access this section.');
             return redirect('auth/login');
+	}
 
         return true;
     }

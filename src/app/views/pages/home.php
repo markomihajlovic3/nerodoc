@@ -1,6 +1,19 @@
-<div class="content-wrapper">
-    <div class="home-info-box">
+<!-- SCROLL CAPSULE -->
+<div class="scroll-section">
+    <div class="scroll-capsule">
+	<ul>
+	    <li><a href="#first-section"><i class="fa fa-circle active-nav" aria-hidden="true"></i></a></li>
+	    <li><a href="#second-section"><i class="fa fa-circle" aria-hidden="true"></i></a></li>
+	    <li><a href="#third-section"><i class="fa fa-circle" aria-hidden="true"></i></a></li>
+	</ul>
+	
+    </div>
+</div>
 
+<!-- FIRST SECTION -->
+<div id="first-section">
+    <div class="first-wrap">
+	<!-- If the user is not logged in -->
         <?php if(!container('Auth')->check()): ?>
             <a href="<?= url('auth/register')?>">
                 <div class="flat-box">
@@ -10,11 +23,11 @@
                 </div>
             </a>
 
-            <a href="#">
+            <a href="<?= url('forum')?>">
                 <div class="flat-box">
-                    <h1>About</h1>
-                    <p>Read more about motivation behind Nero code base, how it all started and more about the creative process of writing code.</p>
-                    <p>This is where you get all the inspiration you need.</p>
+                    <h1>Forums</h1>
+                    <p>Join the forums and be a part of the Nero community.We are a friendly bunch of people aimed at helping each other
+		    out with whatever problems that we face.</p>
                 </div>
             </a>
 
@@ -26,35 +39,37 @@
                 </div>
             </a>
         <?php else: ?>
-            <div class="home-welcome-box">
-                <div class="welcome-message">
-                    <img alt="" src="<?= url('images/profile-icon1.png');?>"/>
-                    <h1>Welcome <?= container('Auth')->user()->name; ?></h1>
-                    <p>I hope you enjoy your stay and take a peek at Nero codebase, as it's really easy to start digging in.
-                        Start with the documentation where I explain the main principles and patterns that are used to power the framework.
-                    </p>
-                </div>
+	    <!-- If the user is logged in -->
+            <div class="logged-wrapper">
+		<?php $user = container('Auth')->user(); ?>
 
 
-                <div class="welcome-ribon">
-                    <h3>Why Nero?</h3>
-                    <ul>
-                        <li>It's lightweight.</li>
-                        <li>It follows MVC pattern for great separation of concerns.</li>
-                        <li>Sports a great routing implementation.</li>
-                        <li>Implements multiple database abstraction layers.</li>
-                        <li>Implements active record model pattern.</li>
-                        <li>Uses plain old PHP for fast templating of views.</li>
-                    </ul>
+		<!-- user information -->
+		<h1><a href="<?= url('profile/'. $user->username); ?>"><?= $user->name; ?></a></h1>
+		<img alt="" src="<?= url('users/'. $user->username . "/" . $user->profile_image);?>"/>
 
-                    <a class="btn btn-primary" href="https://github.com/germancar/nero">Check it out on GitHub</a>
-                </div>
+		<!-- flash message -->
+		<?php if($flash = flash('welcome')): ?>
+		    <div class="flash">
+			<h5><?= $flash;?></h5>
+		    </div>
+		<?php endif; ?>
+
+		<p>Welcome to the Nero framework <?= $user->name;?>, I hope you will enjoy your stay! You can browse
+		    the documentation to learn more about the framework, or jump right into discussion with other members at the forum.
+		</p>
+
             </div>
         <?php endif; ?>
+    </div>
+</div>
 
-        <div class="intro-content">
+
+<!-- SECOND SECTION -->
+<div id="second-section">
+    <div class="second-wrap">
             <div class="intro-code">
-                <h1>Powerfull and simple code</h1>
+                <h1>Powerful and simple code</h1>
                 
                 <pre class="brush: php">
 class IntroController extends BaseController
@@ -95,15 +110,17 @@ class IntroController extends BaseController
             </div>
         </div>
 
-        <div class="clearfix"></div>
-    </div>
+
+
+	<div class="clearfix"></div>
+</div>
 </div>
 
 
-<div class="quote-art">
+<div id="third-section">
     <div class="zen-quote">
         <h1>Let simplicity be your window into the world.</h1>
-        <p>Daily message from Nero...</p>
+        <p>Daily message from Nero</p>
     </div>
 </div>
 

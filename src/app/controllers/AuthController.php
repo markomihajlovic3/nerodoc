@@ -2,13 +2,14 @@
 
 namespace Nero\App\Controllers;
 
-//import what we need
+//import needed services
 use Nero\Services\Auth;
+use Nero\App\Models\User;
 use Symfony\Component\HttpFoundation\Request;
 
 
 /*
- * Controller responsible for logging and registering users
+ * AuthController is responsible for logging in and registering new users
  */
 class AuthController extends BaseController
 {
@@ -44,13 +45,26 @@ class AuthController extends BaseController
         ]);
 
         //validation passed
-        if($validated && $auth->register($request->request->all())){
+        if($validated && $id = $auth->register($request->request->all())){
             container('Session')->destroyOldInput();
+
+	    //find the newly registered user
+	    $user = User::find($id);
+
+	    //create a folder for profile image
+	    $oldmask = umask(0);
+	    mkdir('users/' . $user->username, 0777);
+	    umask($oldmask);
+
+	    //copy the default profile image
+	    copy('images/profile.png', 'users/' . $user->username . '/profile.png');
+
+	    //store a flash message for the first welcome
+	    flash('welcome', 'You have logged in for the first time, welcome and have fun!');
 
             //user registered, go to login page
             return redirect('auth/login');
-        } 
-
+        }
         //validation failed, return back to registration form with old input 
         return redirect()->back()->withOld($request->request->all());
     }

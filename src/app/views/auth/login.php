@@ -1,5 +1,12 @@
 <div class="auth-box">
-    <img alt="" src="<?= url('images/profile-icon1.png')?>"/>
+    <img alt="" src="<?= url('images/profile.png')?>"/>
+
+    <?php if($flash = flash('access')): ?>
+	<div class="flash">
+	    <h5><?= $flash;?></h5>
+	</div>
+    <?php endif; ?>
+
 
     <form method="POST" action="<?= url('auth/login')?>">
         <div class="form-group">

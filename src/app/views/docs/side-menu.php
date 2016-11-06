@@ -5,12 +5,6 @@
     </div>
 
     <div class="doc-side-submenu">
-        <h3><a href="">Architecture</a></h3>
-        <p>High level overview of the structure and architecture of the framework</p>
-    </div>
-
-
-    <div class="doc-side-submenu">
         <h3><a href="">Routing</a></h3>
         <p>Learn how framework handles routing </p>
     </div>
@@ -20,6 +14,10 @@
         <p>Your standard controllers, all about them</p>
     </div>
 
+    <div class="doc-side-submenu">
+        <h3><a href="">Responses</a></h3>
+        <p>How to serve HTTP responses from the controllers</p>
+    </div>
 
     <div class="doc-side-submenu">
         <h3><a href="">Request Filters</a></h3>

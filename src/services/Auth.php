@@ -4,7 +4,7 @@ namespace Nero\Services;
 
 use Session;
 use Nero\Core\Database\QB;
-
+use Nero\App\Models\User;
 
 class Auth
 {
@@ -47,7 +47,7 @@ class Auth
 
         //check password
         if($queryResult && password_verify($password, $queryResult[0]['password'])){
-            container('Session')->set("user", $queryResult[0]);;
+            container('Session')->set("user_id", $queryResult[0]['id']);;
             return true;
         }
 
@@ -74,7 +74,7 @@ class Auth
      */
     public function check()
     {
-        if(container('Session')->get('user'))
+        if(container('Session')->get('user_id'))
             return true;
 
         return false;
@@ -88,9 +88,13 @@ class Auth
      */
     public function user()
     {
-        if($userData = container('Session')->get('user')){
-            $model = $this->createModel($userData);
-            return $model;
+
+        if($userID = container('Session')->get('user_id')){
+            //create the model from the id thats stored in the session
+            $modelName = ucfirst(config('auth_return_model'));
+            $fullModelName = "Nero\App\Models\\$modelName";
+
+            return $fullModelName::find($userID);
         }
 
         return false;

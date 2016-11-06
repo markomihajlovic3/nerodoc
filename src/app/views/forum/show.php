@@ -1,12 +1,13 @@
 <div class="content-wrapper">
     <div class="topic-show">
-        <h3>Discussion on - <?= $topic->title; ?></h3>
+        <h3><i class="fa fa-comments" aria-hidden="true"></i>  <?= $topic->title; ?></h3>
 
         <!-- Let's show all the posts -->
         <?php foreach($topic->posts() as $post): ?>
             <div class="post">
                 <div class="post-header">
-                    by <?= $post->user()->name; ?> on <?= date('j F Y', $post->created_at);?>
+		    <img alt="" src="<?= url("users/" .$post->user()->username . "/" .$post->user()->profile_image)?>"/>
+                    <a href="<?= url('profile/'. $post->user()->username)?>"><?= $post->user()->name; ?></a> <span>on <?= date('j. F Y', $post->created_at);?></span>
                 </div>
 
                 <div class="post-body">
